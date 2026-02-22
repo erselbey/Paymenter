@@ -1,0 +1,740 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap");
+@import "tailwindcss";
+
+@plugin "@tailwindcss/forms" {
+    strategy: class;
+}
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@source "../views";
+@source "../../../extensions/**/*.blade.php";
+@source "../../../extensions/Servers/Proxmox";
+@source "../../../extensions/Others/Pages";
+
+@theme {
+    --font-sans: "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+    --font-heading: "Manrope", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+    --animate-float-soft: float-soft 6s ease-in-out infinite;
+    @keyframes float-soft {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-8px);
+        }
+    }
+}
+
+@theme inline {
+    --color-primary: hsl(var(--color-primary));
+    --color-secondary: hsl(var(--color-secondary));
+    --color-neutral: hsl(var(--color-neutral));
+    --color-base: hsl(var(--color-base));
+    --color-muted: hsl(var(--color-muted));
+    --color-inverted: hsl(var(--color-inverted));
+    --color-success: hsl(var(--color-success));
+    --color-error: hsl(var(--color-error));
+    --color-warning: hsl(var(--color-warning));
+    --color-inactive: hsl(var(--color-inactive));
+    --color-info: hsl(var(--color-info));
+    --color-background: hsl(var(--color-background));
+    --color-background-secondary: hsl(var(--color-background-secondary));
+}
+
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        color: color-mix(in oklab, var(--color-base) 92%, transparent);
+        line-height: 1.55;
+        background:
+            radial-gradient(circle at 12% 10%, color-mix(in oklab, var(--color-secondary) 38%, transparent), transparent 42%),
+            radial-gradient(circle at 82% 16%, color-mix(in oklab, var(--color-primary) 35%, transparent), transparent 45%),
+            radial-gradient(circle at 58% 84%, color-mix(in oklab, var(--color-primary) 18%, transparent), transparent 52%),
+            linear-gradient(180deg, color-mix(in oklab, var(--color-background) 92%, white 8%), var(--color-background));
+        background-attachment: fixed;
+    }
+
+    body.dark {
+        background:
+            radial-gradient(circle at 8% 14%, color-mix(in oklab, var(--color-primary) 28%, transparent), transparent 46%),
+            radial-gradient(circle at 74% 8%, color-mix(in oklab, var(--color-secondary) 26%, transparent), transparent 45%),
+            linear-gradient(170deg, color-mix(in oklab, var(--color-background) 86%, black 14%), var(--color-background-secondary));
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-heading);
+        letter-spacing: -0.02em;
+    }
+
+    input,
+    textarea,
+    select {
+        border-color: color-mix(in oklab, var(--color-neutral) 80%, transparent);
+        background-color: color-mix(in oklab, var(--color-background) 92%, white 8%);
+        color: color-mix(in oklab, var(--color-base) 92%, transparent);
+    }
+
+    select option,
+    select optgroup {
+        color: color-mix(in oklab, var(--color-base) 92%, transparent);
+        background-color: color-mix(in oklab, var(--color-background) 94%, white 6%);
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+        border-color: color-mix(in oklab, var(--color-primary) 70%, transparent);
+        box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-primary) 20%, transparent);
+    }
+}
+
+@utility card {
+    @apply rounded-2xl border border-neutral/70 bg-background-secondary/85 text-base shadow-[0_18px_48px_-30px_rgba(10,15,26,0.35)] backdrop-blur-sm;
+}
+
+@utility container {
+    @apply mx-auto max-w-[1320px] px-4 sm:px-6 lg:px-8;
+}
+
+@utility text-nowrap {
+    text-wrap: nowrap;
+}
+
+@utility text-wrap {
+    text-wrap: wrap;
+}
+
+@import "./easymde.css";
+
+.gsc-surface {
+    background: color-mix(in oklab, var(--color-background-secondary) 84%, white 16%);
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 72%, transparent);
+    box-shadow: 0 22px 60px -36px rgba(17, 24, 39, 0.4);
+}
+
+.dark .gsc-surface {
+    background: color-mix(in oklab, var(--color-background-secondary) 82%, black 18%);
+    box-shadow: 0 24px 70px -42px rgba(0, 0, 0, 0.7);
+}
+
+.gsc-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    padding: 0.48rem 0.78rem;
+    text-transform: uppercase;
+}
+
+.gsc-nav-shell {
+    border-radius: 0.95rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 76%, transparent);
+    background: color-mix(in oklab, var(--color-background) 92%, white 8%);
+    box-shadow: 0 16px 36px -28px rgba(15, 23, 42, 0.28);
+    backdrop-filter: blur(6px);
+}
+
+.dark .gsc-nav-shell {
+    background: color-mix(in oklab, var(--color-background-secondary) 92%, black 8%);
+}
+
+.gsc-nav-link {
+    position: relative;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: color-mix(in oklab, var(--color-base) 90%, transparent);
+    padding: 0.55rem 0.6rem;
+    border-radius: 0.55rem;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.gsc-nav-link::after {
+    display: none;
+}
+
+.gsc-nav-link:hover {
+    color: var(--color-primary);
+    background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+}
+
+.gsc-nav-link:hover::after,
+.gsc-nav-link.active::after {
+    width: 100%;
+}
+
+.gsc-nav-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.6rem;
+    border: 1px solid color-mix(in oklab, var(--color-primary) 38%, transparent);
+    background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+    color: var(--color-primary);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 0.5rem 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.gsc-nav-cta:hover {
+    background: color-mix(in oklab, var(--color-primary) 20%, transparent);
+    border-color: color-mix(in oklab, var(--color-primary) 48%, transparent);
+}
+
+.gsc-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 74%, transparent);
+    background:
+        radial-gradient(circle at 10% 8%, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 30%),
+        radial-gradient(circle at 82% 22%, color-mix(in oklab, var(--color-secondary) 16%, transparent), transparent 34%),
+        linear-gradient(145deg, color-mix(in oklab, var(--color-background) 96%, white 4%), color-mix(in oklab, var(--color-background-secondary) 88%, white 12%));
+}
+
+.dark .gsc-hero {
+    background:
+        radial-gradient(circle at 8% 10%, color-mix(in oklab, var(--color-primary) 20%, transparent), transparent 34%),
+        radial-gradient(circle at 82% 20%, color-mix(in oklab, var(--color-secondary) 20%, transparent), transparent 38%),
+        linear-gradient(130deg, color-mix(in oklab, var(--color-background-secondary) 92%, black 8%), var(--color-background-secondary));
+}
+
+.gsc-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(to right, color-mix(in oklab, var(--color-neutral) 22%, transparent) 1px, transparent 1px),
+        linear-gradient(to bottom, color-mix(in oklab, var(--color-neutral) 22%, transparent) 1px, transparent 1px);
+    background-size: 36px 36px;
+    opacity: 0.18;
+    pointer-events: none;
+}
+
+.gsc-hero-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+.gsc-hero-copy {
+    grid-column: span 7 / span 7;
+}
+
+.gsc-hero-panel {
+    grid-column: span 5 / span 5;
+    display: grid;
+    gap: 1rem;
+}
+
+.gsc-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.gsc-stat {
+    border-radius: 0.85rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 74%, transparent);
+    background: color-mix(in oklab, var(--color-background) 86%, white 14%);
+    padding: 0.95rem;
+}
+
+.dark .gsc-stat {
+    background: color-mix(in oklab, var(--color-background) 84%, black 16%);
+}
+
+.gsc-stat strong {
+    display: block;
+    font-size: 1.35rem;
+    line-height: 1.2;
+    margin-bottom: 0.24rem;
+}
+
+.gsc-stat span {
+    color: color-mix(in oklab, var(--color-muted) 88%, transparent);
+    font-size: 0.82rem;
+}
+
+.gsc-hero-eyebrow {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in oklab, var(--color-primary) 35%, transparent);
+    background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.42rem 0.78rem;
+}
+
+.gsc-hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.9rem, 3.8vw, 3.1rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: color-mix(in oklab, var(--color-base) 96%, transparent);
+}
+
+.gsc-hero-lead {
+    max-width: 56ch;
+    font-size: 1.03rem;
+    line-height: 1.65;
+    color: color-mix(in oklab, var(--color-muted) 84%, transparent);
+}
+
+.gsc-plan-snapshot {
+    border-radius: 1rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 72%, transparent);
+    background: color-mix(in oklab, var(--color-background) 91%, white 9%);
+    box-shadow: 0 20px 45px -34px rgba(15, 23, 42, 0.42);
+}
+
+.dark .gsc-plan-snapshot {
+    background: color-mix(in oklab, var(--color-background-secondary) 90%, black 10%);
+}
+
+.gsc-plan-list {
+    display: grid;
+    gap: 0.65rem;
+}
+
+.gsc-plan-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    border-radius: 0.8rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 70%, transparent);
+    background: color-mix(in oklab, var(--color-background-secondary) 72%, white 28%);
+    padding: 0.7rem 0.8rem;
+}
+
+.dark .gsc-plan-item {
+    background: color-mix(in oklab, var(--color-background) 82%, black 18%);
+}
+
+.gsc-plan-item p {
+    font-size: 0.77rem;
+    color: color-mix(in oklab, var(--color-muted) 86%, transparent);
+}
+
+.gsc-plan-item strong {
+    font-size: 0.93rem;
+    font-weight: 700;
+}
+
+.gsc-plan-item span {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.gsc-world-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: 1rem;
+}
+
+.gsc-world-map {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 72%, transparent);
+    background: color-mix(in oklab, var(--color-background-secondary) 84%, white 16%);
+    min-height: 360px;
+}
+
+.gsc-world-map::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.14));
+    pointer-events: none;
+}
+
+.dark .gsc-world-map::after {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.3));
+}
+
+.gsc-world-map-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(1.1) contrast(1.06);
+}
+
+.gsc-world-flow {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.gsc-world-flow path {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.8);
+    stroke-width: 0.32;
+    stroke-linecap: round;
+    stroke-dasharray: 4 3;
+    animation: gsc-flow 12s linear infinite;
+}
+
+@keyframes gsc-flow {
+    from {
+        stroke-dashoffset: 0;
+    }
+    to {
+        stroke-dashoffset: -120;
+    }
+}
+
+.gsc-map-node {
+    position: absolute;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+}
+
+.gsc-map-dot {
+    position: relative;
+    display: inline-flex;
+    width: 0.62rem;
+    height: 0.62rem;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow:
+        0 0 0 4px color-mix(in oklab, var(--color-primary) 46%, transparent),
+        0 0 18px color-mix(in oklab, var(--color-primary) 78%, transparent);
+}
+
+.gsc-map-label {
+    position: absolute;
+    top: 0.78rem;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(5, 13, 29, 0.64);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.45rem;
+}
+
+.gsc-world-region-list {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.gsc-world-region-card {
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 70%, transparent);
+    background: color-mix(in oklab, var(--color-background-secondary) 82%, white 18%);
+    padding: 0.85rem 0.95rem;
+}
+
+.dark .gsc-world-region-card {
+    background: color-mix(in oklab, var(--color-background) 82%, black 18%);
+}
+
+.gsc-world-region-card strong {
+    display: block;
+    font-size: 0.98rem;
+    margin-bottom: 0.2rem;
+}
+
+.gsc-world-region-card p {
+    font-size: 0.84rem;
+    color: color-mix(in oklab, var(--color-muted) 84%, transparent);
+}
+
+.gsc-provider-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.85rem;
+}
+
+.gsc-provider-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 84px;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 72%, transparent);
+    background: color-mix(in oklab, var(--color-background-secondary) 84%, white 16%);
+    box-shadow: 0 15px 35px -28px rgba(15, 23, 42, 0.35);
+}
+
+.dark .gsc-provider-card {
+    background: color-mix(in oklab, var(--color-background-secondary) 88%, black 12%);
+}
+
+.gsc-region-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 70%, transparent);
+    background: color-mix(in oklab, var(--color-background) 86%, white 14%);
+    padding: 0.35rem 0.72rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.gsc-grid {
+    display: grid;
+    gap: 1.1rem;
+}
+
+.gsc-grid.gsc-categories {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.gsc-grid.gsc-products {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.gsc-category-card,
+.gsc-product-card {
+    border-radius: 1.25rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 72%, transparent);
+    background: color-mix(in oklab, var(--color-background-secondary) 83%, white 17%);
+    box-shadow: 0 20px 50px -34px rgba(15, 23, 42, 0.35);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.dark .gsc-category-card,
+.dark .gsc-product-card {
+    background: color-mix(in oklab, var(--color-background-secondary) 88%, black 12%);
+}
+
+.gsc-category-card:hover,
+.gsc-product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 26px 68px -38px rgba(15, 23, 42, 0.6);
+    border-color: color-mix(in oklab, var(--color-primary) 45%, var(--color-neutral));
+}
+
+.gsc-price-tag {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    color: var(--color-primary);
+}
+
+.gsc-subtle {
+    color: color-mix(in oklab, var(--color-muted) 84%, transparent);
+}
+
+.gsc-footer-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.2rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 68%, transparent);
+    background:
+        radial-gradient(circle at 8% 18%, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 44%),
+        radial-gradient(circle at 80% 6%, color-mix(in oklab, var(--color-secondary) 16%, transparent), transparent 44%),
+        color-mix(in oklab, var(--color-background-secondary) 88%, white 12%);
+}
+
+.dark .gsc-footer-shell {
+    background:
+        radial-gradient(circle at 12% 25%, color-mix(in oklab, var(--color-primary) 18%, transparent), transparent 46%),
+        radial-gradient(circle at 78% 8%, color-mix(in oklab, var(--color-secondary) 18%, transparent), transparent 46%),
+        color-mix(in oklab, var(--color-background-secondary) 90%, black 10%);
+}
+
+.gsc-footer-grid {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr 1fr 1fr;
+    gap: 1.6rem;
+}
+
+.gsc-footer-links {
+    display: grid;
+    gap: 0.55rem;
+    font-size: 0.9rem;
+}
+
+.gsc-footer-links a {
+    color: color-mix(in oklab, var(--color-base) 80%, transparent);
+    transition: color 0.2s ease;
+}
+
+.gsc-footer-links a:hover {
+    color: var(--color-primary);
+}
+
+.gsc-footer-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.gsc-footer-badges span {
+    border-radius: 999px;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 72%, transparent);
+    background: color-mix(in oklab, var(--color-background) 84%, white 16%);
+    padding: 0.3rem 0.62rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.gsc-footer-contact {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.45rem;
+}
+
+.gsc-footer-contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: color-mix(in oklab, var(--color-base) 84%, transparent);
+    font-size: 0.88rem;
+    transition: color 0.2s ease;
+}
+
+.gsc-footer-contact a:hover {
+    color: var(--color-primary);
+}
+
+.gsc-footer-region-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-top: 1.25rem;
+}
+
+.gsc-footer-region-card {
+    border-radius: 0.8rem;
+    border: 1px solid color-mix(in oklab, var(--color-neutral) 70%, transparent);
+    background: color-mix(in oklab, var(--color-background) 82%, white 18%);
+    padding: 0.7rem 0.75rem;
+}
+
+.dark .gsc-footer-region-card {
+    background: color-mix(in oklab, var(--color-background) 84%, black 16%);
+}
+
+.gsc-footer-region-card strong {
+    display: block;
+    font-size: 0.83rem;
+    margin-bottom: 0.1rem;
+}
+
+.gsc-footer-region-card span {
+    font-size: 0.73rem;
+    color: color-mix(in oklab, var(--color-muted) 84%, transparent);
+}
+
+@media (max-width: 1100px) {
+    .gsc-hero-copy,
+    .gsc-hero-panel {
+        grid-column: span 12 / span 12;
+    }
+
+    .gsc-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gsc-footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .gsc-footer-region-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gsc-world-shell {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 860px) {
+    .gsc-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gsc-footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gsc-footer-region-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+::-webkit-scrollbar {
+    background: transparent;
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    border: solid 0 rgb(0 0 0 / 0%);
+    border-right-width: 4px;
+    border-left-width: 4px;
+    -webkit-border-radius: 9px 4px;
+    -webkit-box-shadow:
+        inset 0 0 0 1px hsl(var(--color-primary)),
+        inset 0 0 0 4px hsl(var(--color-primary));
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-track-piece {
+    background: transparent;
+    margin: 4px 0;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    border-right-width: 0;
+    border-left-width: 0;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    -webkit-border-radius: 4px 9px;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}

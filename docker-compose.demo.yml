@@ -1,0 +1,92 @@
+x-common:
+  database: &db-environment
+    # Do not remove the "&db-password" from the end of the line below, it is important
+    # for Paymenter functionality.
+    MYSQL_PASSWORD: &db-password "paymenter_demo_password"
+    MYSQL_ROOT_PASSWORD: "paymenter_demo_root_password"
+
+services:
+  database:
+    image: mariadb:lts
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      <<: *db-environment
+      MYSQL_DATABASE: "paymenter"
+      MYSQL_USER: "paymenter"
+    volumes:
+      - paymenter_demo_db:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mariadb-admin ping -h 127.0.0.1 -upaymenter -p$$MYSQL_PASSWORD --silent
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - paymenter_demo_nw
+
+  cache:
+    image: redis:alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - paymenter_demo_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - paymenter_demo_nw
+
+  paymenter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: paymenter-demo:local
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      APP_ENV: "production"
+      APP_URL: "http://localhost:8080"
+      DB_CONNECTION: "mariadb"
+      DB_HOST: "database"
+      DB_PORT: "3306"
+      DB_PASSWORD: *db-password
+      CACHE_STORE: "redis"
+      REDIS_HOST: "cache"
+      PAYMENTER_SKIP_DEFAULT: "false"
+      PAYMENTER_DEMO_DATA: "true"
+    volumes:
+      - paymenter_demo_app:/app
+      - paymenter_demo_var:/app/var
+    networks:
+      - paymenter_demo_nw
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    networks:
+      - paymenter_demo_nw
+
+networks:
+  paymenter_demo_nw:
+    driver: bridge
+
+volumes:
+  paymenter_demo_app:
+  paymenter_demo_var:
+  paymenter_demo_db:
+  paymenter_demo_redis:

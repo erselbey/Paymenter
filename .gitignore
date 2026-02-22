@@ -14,6 +14,8 @@ Homestead.yaml
 auth.json
 npm-debug.log
 yarn-error.log
+.DS_Store
+/dist
 /.fleet
 /.idea
 /.vscode
@@ -22,3 +24,5 @@ extensions/Others/Pages
 extensions/Servers/LicenseManager
 extensions/Servers/Proxmox
 !themes/default
+!themes/getselfcloud-modern
+!themes/getselfcloud-modern/**

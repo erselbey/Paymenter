@@ -1,0 +1,26 @@
+{
+  "themes/getselfcloud-modern/css/app.css": {
+    "file": "assets/app-D3rGxNEU.css",
+    "src": "themes/getselfcloud-modern/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "themes/getselfcloud-modern/js/app.js": {
+    "file": "assets/app-DuqR07tS.js",
+    "name": "app",
+    "src": "themes/getselfcloud-modern/js/app.js",
+    "isEntry": true
+  },
+  "themes/getselfcloud-modern/js/easymde-entry.js": {
+    "file": "assets/easymde-entry-OqlPAMoI.js",
+    "name": "easymde-entry",
+    "src": "themes/getselfcloud-modern/js/easymde-entry.js",
+    "isEntry": true,
+    "css": [
+      "assets/easymde-entry-DaCrUmpA.css"
+    ]
+  }
+}

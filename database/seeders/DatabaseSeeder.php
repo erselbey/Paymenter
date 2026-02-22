@@ -50,5 +50,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             EmailTemplateSeeder::class,
         ]);
+
+        if (filter_var(env('PAYMENTER_DEMO_DATA', false), FILTER_VALIDATE_BOOLEAN)) {
+            $this->call([
+                DemoDataSeeder::class,
+            ]);
+        }
     }
 }
