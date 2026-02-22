@@ -24,15 +24,16 @@ Alpine.store('notifications', {
         notification = notification[0]
         notification.show = false
         notification.id = Date.now() + Math.floor(Math.random() * 1000)
+        const notificationId = notification.id
         this.notifications.push(notification)
 
         // Update the notification to show it
         Alpine.nextTick(() => {
-            this.notifications = this.notifications.map(notification => {
-                if (notification.id === notification.id) {
-                    notification.show = true
+            this.notifications = this.notifications.map(item => {
+                if (item.id === notificationId) {
+                    item.show = true
                 }
-                return notification
+                return item
             })
         })
 

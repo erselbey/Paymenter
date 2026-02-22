@@ -12,7 +12,44 @@
         @endisset
     </title>
     @livewireStyles
-    @vite(['themes/' . config('settings.theme') . '/js/app.js', 'themes/' . config('settings.theme') . '/css/app.css'], config('settings.theme'))
+    @php
+        $activeTheme = config('settings.theme');
+        $manifestPath = public_path($activeTheme . '/manifest.json');
+        $themeAssetsDir = public_path($activeTheme . '/assets');
+        $useVite = file_exists($manifestPath);
+
+        $latestAsset = static function (string $pattern): ?string {
+            $matches = glob($pattern) ?: [];
+            if ($matches === []) {
+                return null;
+            }
+
+            usort($matches, static fn (string $a, string $b) => filemtime($b) <=> filemtime($a));
+
+            return $matches[0] ?? null;
+        };
+
+        $appCssAsset = null;
+        $appJsAsset = null;
+
+        if (! $useVite && is_dir($themeAssetsDir)) {
+            $appCssFile = $latestAsset($themeAssetsDir . '/app-*.css');
+            $appJsFile = $latestAsset($themeAssetsDir . '/app-*.js');
+
+            $appCssAsset = $appCssFile ? asset($activeTheme . '/assets/' . basename($appCssFile)) : null;
+            $appJsAsset = $appJsFile ? asset($activeTheme . '/assets/' . basename($appJsFile)) : null;
+        }
+    @endphp
+    @if ($useVite)
+        @vite(['themes/' . $activeTheme . '/js/app.js', 'themes/' . $activeTheme . '/css/app.css'], $activeTheme)
+    @else
+        @if ($appCssAsset)
+            <link rel="stylesheet" href="{{ $appCssAsset }}">
+        @endif
+        @if ($appJsAsset)
+            <script type="module" src="{{ $appJsAsset }}"></script>
+        @endif
+    @endif
     @include('layouts.colors')
 
     @if (config('settings.favicon'))
@@ -56,7 +93,7 @@
     <x-navigation />
     <div class="w-full flex flex-grow">
         @if (isset($sidebar) && $sidebar)
-        <x-navigation.sidebar title="$title" />
+        <x-navigation.sidebar :title="$title" />
         @endif
         <div class="{{ (isset($sidebar) && $sidebar) ? 'md:ml-64 rtl:ml-0 rtl:md:mr-64' : '' }} flex flex-col flex-grow overflow-auto">
             <main class="mt-20 grow">

@@ -12,7 +12,16 @@
         @endisset
     </title>
     @livewireStyles
-    @vite(['themes/' . config('settings.theme') . '/js/app.js', 'themes/' . config('settings.theme') . '/css/app.css'], config('settings.theme'))
+    @php
+        $activeTheme = config('settings.theme');
+        $hasThemeAssets = file_exists(public_path($activeTheme . '/manifest.json')) || file_exists(public_path($activeTheme . '/hot'));
+        $hasDefaultAssets = file_exists(public_path('default/manifest.json')) || file_exists(public_path('default/hot'));
+
+        if (!$hasThemeAssets && $hasDefaultAssets) {
+            $activeTheme = 'default';
+        }
+    @endphp
+    @vite(['themes/' . $activeTheme . '/js/app.js', 'themes/' . $activeTheme . '/css/app.css'], $activeTheme)
     @include('layouts.colors')
 
     @if (config('settings.favicon'))
@@ -56,7 +65,7 @@
     <x-navigation />
     <div class="w-full flex flex-grow">
         @if (isset($sidebar) && $sidebar)
-        <x-navigation.sidebar title="$title" />
+        <x-navigation.sidebar :title="$title" />
         @endif
         <div class="{{ (isset($sidebar) && $sidebar) ? 'md:ml-64 rtl:ml-0 rtl:md:mr-64' : '' }} flex flex-col flex-grow overflow-auto">
             <main class="mt-16 grow">

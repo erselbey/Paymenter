@@ -1,5 +1,42 @@
 @once
-    @vite('themes/' . config('settings.theme') . '/js/easymde-entry.js', config('settings.theme'))
+    @php
+        $activeTheme = config('settings.theme');
+        $manifestPath = public_path($activeTheme . '/manifest.json');
+        $themeAssetsDir = public_path($activeTheme . '/assets');
+        $useVite = file_exists($manifestPath);
+
+        $latestAsset = static function (string $pattern): ?string {
+            $matches = glob($pattern) ?: [];
+            if ($matches === []) {
+                return null;
+            }
+
+            usort($matches, static fn (string $a, string $b) => filemtime($b) <=> filemtime($a));
+
+            return $matches[0] ?? null;
+        };
+
+        $easymdeCssAsset = null;
+        $easymdeJsAsset = null;
+
+        if (! $useVite && is_dir($themeAssetsDir)) {
+            $easymdeCssFile = $latestAsset($themeAssetsDir . '/easymde-entry-*.css');
+            $easymdeJsFile = $latestAsset($themeAssetsDir . '/easymde-entry-*.js');
+
+            $easymdeCssAsset = $easymdeCssFile ? asset($activeTheme . '/assets/' . basename($easymdeCssFile)) : null;
+            $easymdeJsAsset = $easymdeJsFile ? asset($activeTheme . '/assets/' . basename($easymdeJsFile)) : null;
+        }
+    @endphp
+    @if ($useVite)
+        @vite('themes/' . $activeTheme . '/js/easymde-entry.js', $activeTheme)
+    @else
+        @if ($easymdeCssAsset)
+            <link rel="stylesheet" href="{{ $easymdeCssAsset }}">
+        @endif
+        @if ($easymdeJsAsset)
+            <script type="module" src="{{ $easymdeJsAsset }}"></script>
+        @endif
+    @endif
 @endonce
 
 @script
