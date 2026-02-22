@@ -16,6 +16,11 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Home::class)->name('home');
+Route::view('/cloud/platform', 'pages.platform')->name('pages.platform');
+Route::view('/cloud/infrastructure', 'pages.infrastructure')->name('pages.infrastructure');
+Route::view('/cloud/solutions', 'pages.solutions')->name('pages.solutions');
+Route::view('/cloud/compare', 'pages.compare')->name('pages.compare');
+Route::view('/cloud/status', 'pages.status')->name('pages.status');
 
 // Destroy the session and log out the user.
 // auth()->logout();

@@ -1,0 +1,85 @@
+name: Dev Deploy - getselfcloud.com
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - app/**
+      - bootstrap/**
+      - config/**
+      - database/**
+      - public/**
+      - resources/**
+      - routes/**
+      - themes/getselfcloud-modern/**
+      - composer.json
+      - composer.lock
+      - package.json
+      - package-lock.json
+      - .github/workflows/dev-getselfcloud-deploy.yaml
+
+concurrency:
+  group: dev-getselfcloud-deploy
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and Validate
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install dependencies
+        run: |
+          composer install --no-interaction --no-progress --prefer-dist
+          npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Basic framework checks
+        run: |
+          php artisan optimize:clear
+          php artisan route:cache
+          php artisan view:cache
+
+  deploy:
+    name: Deploy to dev.getselfcloud.com
+    runs-on: ubuntu-24.04
+    needs: build
+    environment:
+      name: dev-getselfcloud
+      url: https://dev.getselfcloud.com
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEV_GSC_HOST }}
+          username: ${{ secrets.DEV_GSC_USER }}
+          key: ${{ secrets.DEV_GSC_SSH_KEY }}
+          port: ${{ secrets.DEV_GSC_PORT || '22' }}
+          script_stop: true
+          command_timeout: 30m
+          script: |
+            set -euo pipefail
+            cd "${{ secrets.DEV_GSC_APP_PATH }}"
+            git fetch --all --prune
+            git checkout master
+            git pull --ff-only origin master
+            docker compose pull
+            docker compose up -d --build
+            docker compose exec -T paymenter php artisan optimize:clear

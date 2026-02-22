@@ -26,3 +26,53 @@
 @media (prefers-reduced-motion:reduce){
 .gsc-map-flow,.gsc-map-node-dot,.gsc-world-map-image,.gsc-world-overlay,.gsc-world-map--network:after{animation:none!important}
 }
+
+/* getselfcloud ui patch: nav expansion, new pages, interactive map labels/tooltips */
+.gsc-nav-child{display:grid;gap:.18rem;border-radius:.66rem;border:1px solid transparent;padding:.58rem .62rem;transition:border-color .2s ease,background-color .2s ease,color .2s ease}
+.gsc-nav-child:hover{border-color:color-mix(in oklab,var(--color-primary)32%,transparent);background:color-mix(in oklab,var(--color-primary)10%,transparent)}
+.gsc-nav-child-title{font-size:.82rem;font-weight:700;color:color-mix(in oklab,var(--color-base)92%,transparent);line-height:1.2}
+.gsc-nav-child-description{font-size:.72rem;line-height:1.36;color:color-mix(in oklab,var(--color-muted)86%,transparent)}
+.gsc-page-shell{width:min(1240px,100% - 1.25rem);margin-inline:auto}
+.gsc-page-hero{border-radius:1.2rem;border:1px solid color-mix(in oklab,var(--color-neutral)70%,transparent);background:radial-gradient(circle at 16% 18%,color-mix(in oklab,var(--color-primary)13%,transparent),transparent 34%),radial-gradient(circle at 85% 30%,color-mix(in oklab,var(--color-secondary)15%,transparent),transparent 36%),color-mix(in oklab,var(--color-background-secondary)86%,white 14%);padding:1.4rem}
+.dark .gsc-page-hero{background:radial-gradient(circle at 16% 18%,color-mix(in oklab,var(--color-primary)20%,transparent),transparent 36%),radial-gradient(circle at 85% 30%,color-mix(in oklab,var(--color-secondary)22%,transparent),transparent 38%),color-mix(in oklab,var(--color-background-secondary)88%,black 12%)}
+.gsc-page-hero h1{font-family:var(--font-heading);font-size:clamp(1.6rem,3.2vw,2.6rem);line-height:1.1;letter-spacing:-.025em}
+.gsc-page-subtle{color:color-mix(in oklab,var(--color-muted)85%,transparent);line-height:1.65}
+.gsc-page-grid{display:grid;gap:1rem}
+.gsc-page-grid--2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.gsc-page-grid--3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gsc-page-grid--4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.gsc-page-card{border-radius:1rem;border:1px solid color-mix(in oklab,var(--color-neutral)72%,transparent);background:color-mix(in oklab,var(--color-background-secondary)84%,white 16%);padding:1rem;box-shadow:0 18px 42px -32px rgba(15,23,42,.35)}
+.dark .gsc-page-card{background:color-mix(in oklab,var(--color-background-secondary)88%,black 12%)}
+.gsc-page-card h3{font-size:1rem;font-weight:700;margin-bottom:.35rem}
+.gsc-page-kpi strong{display:block;font-size:clamp(1.4rem,2.3vw,1.9rem);line-height:1.1}
+.gsc-page-kpi span{margin-top:.3rem;display:block;font-size:.8rem;color:color-mix(in oklab,var(--color-muted)86%,transparent)}
+.gsc-page-list{margin-top:.6rem;display:grid;gap:.4rem}
+.gsc-page-list li{display:flex;align-items:flex-start;gap:.5rem;font-size:.87rem;line-height:1.45;color:color-mix(in oklab,var(--color-base)86%,transparent)}
+.gsc-page-list li:before{content:"";margin-top:.45rem;width:.32rem;height:.32rem;border-radius:999px;background:color-mix(in oklab,var(--color-primary)88%,white 12%);flex-shrink:0}
+.gsc-page-pill{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;border:1px solid color-mix(in oklab,var(--color-primary)38%,transparent);background:color-mix(in oklab,var(--color-primary)10%,transparent);color:color-mix(in oklab,var(--color-primary)84%,white 16%);font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.35rem .62rem}
+.gsc-page-table-wrap{overflow:auto;border-radius:.9rem;border:1px solid color-mix(in oklab,var(--color-neutral)72%,transparent)}
+.gsc-page-table{width:100%;min-width:680px;border-collapse:collapse;background:color-mix(in oklab,var(--color-background-secondary)86%,white 14%)}
+.dark .gsc-page-table{background:color-mix(in oklab,var(--color-background-secondary)90%,black 10%)}
+.gsc-page-table th,.gsc-page-table td{border-bottom:1px solid color-mix(in oklab,var(--color-neutral)64%,transparent);padding:.7rem .75rem;text-align:left;vertical-align:top;font-size:.85rem;line-height:1.45}
+.gsc-page-table th{font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in oklab,var(--color-muted)88%,transparent);background:color-mix(in oklab,var(--color-background)86%,white 14%)}
+.dark .gsc-page-table th{background:color-mix(in oklab,var(--color-background)88%,black 12%)}
+.gsc-page-table tr:last-child td{border-bottom:none}
+.gsc-world-overlay{pointer-events:auto}
+.gsc-map-flows,.gsc-map-packets{pointer-events:none}
+.gsc-map-location{cursor:pointer;pointer-events:all;outline:none}
+.gsc-map-location-hit{fill:rgba(4,20,40,.001);stroke:#0000;stroke-width:1.4;transition:stroke .2s ease}
+.gsc-map-city-label{fill:rgba(227,246,255,.94);font-size:12.2px;font-weight:600;letter-spacing:.02em;paint-order:stroke;stroke:rgba(6,18,34,.76);stroke-width:2.8px;stroke-linejoin:round;pointer-events:none}
+.gsc-map-city-tooltip{opacity:0;pointer-events:none;transition:opacity .2s ease}
+.gsc-map-city-tooltip-card{fill:rgba(4,16,30,.92);stroke:rgba(133,205,255,.58);stroke-width:1;filter:drop-shadow(0 6px 16px rgba(2,8,18,.54))}
+.gsc-map-city-tooltip-title{fill:#f2fbff;font-size:11px;font-weight:700;letter-spacing:.01em}
+.gsc-map-city-tooltip-meta{fill:rgba(181,221,255,.92);font-size:10px;font-weight:600}
+.gsc-map-city-tooltip-line{fill:rgba(220,242,255,.9);font-size:9.8px;font-weight:500}
+.gsc-map-location:hover .gsc-map-city-tooltip,.gsc-map-location:focus .gsc-map-city-tooltip,.gsc-map-location:focus-visible .gsc-map-city-tooltip{opacity:1}
+.gsc-map-location:hover .gsc-map-location-hit,.gsc-map-location:focus .gsc-map-location-hit,.gsc-map-location:focus-visible .gsc-map-location-hit{stroke:rgba(158,223,255,.68)}
+.gsc-map-location:hover .gsc-map-node-dot,.gsc-map-location:focus .gsc-map-node-dot,.gsc-map-location:focus-visible .gsc-map-node-dot{fill:#fff}
+.gsc-map-location:hover .gsc-map-city-label,.gsc-map-location:focus .gsc-map-city-label,.gsc-map-location:focus-visible .gsc-map-city-label{fill:#fff}
+.gsc-map-dot:before,.gsc-map-dot:after{animation:gsc-node-ring-pulse 3s ease-out infinite}
+@keyframes gsc-node-ring-pulse{0%{transform:scale(.42);opacity:.88}72%{opacity:.1}to{transform:scale(1.26);opacity:0}}
+@media (max-width:1100px){.gsc-page-grid--3,.gsc-page-grid--4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.gsc-page-grid--2,.gsc-page-grid--3,.gsc-page-grid--4{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.gsc-map-city-tooltip,.gsc-map-location-hit{transition:none!important}}

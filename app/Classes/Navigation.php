@@ -5,6 +5,7 @@ namespace App\Classes;
 use App\Helpers\EventHelper;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class Navigation
 {
@@ -25,13 +26,57 @@ class Navigation
                     'icon' => 'ri-home-2',
                 ],
                 [
+                    'name' => 'Platform',
+                    'icon' => 'ri-stack',
+                    'dropdown_width' => 'w-[24rem]',
+                    'children' => [
+                        [
+                            'name' => 'Cloud Platform Overview',
+                            'description' => 'Compute, storage, databases, and one-click deployment building blocks.',
+                            'url' => route('pages.platform'),
+                        ],
+                        [
+                            'name' => 'Infrastructure Footprint',
+                            'description' => 'Global city map, region architecture, and network routing model.',
+                            'url' => route('pages.infrastructure'),
+                        ],
+                        [
+                            'name' => 'Service Status and SLO',
+                            'description' => 'Availability targets, maintenance windows, and incident response workflow.',
+                            'url' => route('pages.status'),
+                        ],
+                    ],
+                ],
+                [
+                    'name' => 'Solutions',
+                    'icon' => 'ri-flashlight',
+                    'dropdown_width' => 'w-[24rem]',
+                    'children' => [
+                        [
+                            'name' => 'Workload Blueprints',
+                            'description' => 'Reference setups for SaaS, data platforms, AI APIs, and edge services.',
+                            'url' => route('pages.solutions'),
+                        ],
+                        [
+                            'name' => 'Compare with Major Clouds',
+                            'description' => 'Feature-level comparison against common developer-focused providers.',
+                            'url' => route('pages.compare'),
+                        ],
+                    ],
+                ],
+                [
                     'name' => __('navigation.shop'),
                     'children' => $categories->map(function ($category) {
                         return [
                             'name' => $category->name,
+                            'description' => $category->description
+                                ? Str::limit(trim(strip_tags($category->description)), 72)
+                                : 'Browse plans and deploy in minutes.',
                             'url' => route('category.show', ['category' => $category->slug]),
                         ];
                     })->toArray(),
+                    'dropdown_width' => 'w-[28rem]',
+                    'dropdown_columns' => 2,
                     'condition' => count($categories) > 0,
                     'separator' => true,
                     'icon' => 'ri-shopping-bag',

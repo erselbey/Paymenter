@@ -28,19 +28,19 @@
                             <x-ri-customer-service-2-line class="size-4" />
                             support@getselfcloud.com
                         </a>
-                        <a href="{{ route('home') }}#service-categories">
+                        <a href="{{ route('pages.platform') }}" wire:navigate>
                             <x-ri-stack-line class="size-4" />
-                            Explore infrastructure catalog
+                            Explore cloud platform
                         </a>
                     </div>
                 </div>
 
                 <div class="gsc-footer-links">
                     <h4 class="text-sm font-semibold uppercase tracking-[0.14em] text-base/70">Platform</h4>
-                    <a href="{{ route('home') }}#service-categories">KVM VPS and Compute</a>
-                    <a href="{{ route('home') }}#service-categories">Managed VPN and Proxy</a>
-                    <a href="{{ route('home') }}#service-categories">Managed Database Services</a>
-                    <a href="{{ route('home') }}#service-categories">One-click App Stacks</a>
+                    <a href="{{ route('pages.platform') }}" wire:navigate>Compute, DB, and App Platform</a>
+                    <a href="{{ route('pages.infrastructure') }}" wire:navigate>Infrastructure and regions</a>
+                    <a href="{{ route('pages.solutions') }}" wire:navigate>Use-case blueprints</a>
+                    <a href="{{ route('pages.compare') }}" wire:navigate>Compare with major clouds</a>
                 </div>
 
                 <div class="gsc-footer-links">
@@ -71,7 +71,7 @@
                     @if (config('settings.tos'))
                     <a href="{{ config('settings.tos') }}" target="_blank" rel="noopener">Terms of Service</a>
                     @endif
-                    <a href="https://status.getselfcloud.com" target="_blank" rel="noopener">Status Page</a>
+                    <a href="{{ route('pages.status') }}" wire:navigate>Status Page</a>
                     <a href="https://docs.getselfcloud.com" target="_blank" rel="noopener">Documentation</a>
                 </div>
             </div>

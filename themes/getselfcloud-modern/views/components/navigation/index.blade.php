@@ -17,7 +17,7 @@
                 <div class="hidden items-center gap-1 overflow-visible md:flex">
                     @foreach (\App\Classes\Navigation::getLinks() as $nav)
                     @if (isset($nav['children']) && count($nav['children']) > 0)
-                    <x-dropdown :showArrow="false">
+                    <x-dropdown :showArrow="false" :width="$nav['dropdown_width'] ?? 'w-56'">
                         <x-slot:trigger>
                             <span class="gsc-nav-link inline-flex cursor-pointer items-center gap-1 whitespace-nowrap">
                                 {{ $nav['name'] }}
@@ -25,11 +25,20 @@
                             </span>
                         </x-slot:trigger>
                         <x-slot:content>
-                            @foreach ($nav['children'] as $child)
-                            <x-navigation.link :href="$child['url']" :spa="isset($child['spa']) ? $child['spa'] : true">
-                                {{ $child['name'] }}
-                            </x-navigation.link>
-                            @endforeach
+                            <div class="{{ (($nav['dropdown_columns'] ?? 1) > 1) ? 'grid grid-cols-2 gap-1.5' : 'grid gap-1' }}">
+                                @foreach ($nav['children'] as $child)
+                                <a
+                                    href="{{ $child['url'] }}"
+                                    class="gsc-nav-child"
+                                    @if(isset($child['spa']) ? $child['spa'] : true) wire:navigate @endif
+                                >
+                                    <span class="gsc-nav-child-title">{{ $child['name'] }}</span>
+                                    @if (!empty($child['description']))
+                                    <span class="gsc-nav-child-description">{{ $child['description'] }}</span>
+                                    @endif
+                                </a>
+                                @endforeach
+                            </div>
                         </x-slot:content>
                     </x-dropdown>
                     @else
@@ -45,8 +54,8 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <a href="{{ route('home') }}#service-categories" class="hidden xl:inline-flex gsc-nav-cta">
-                    Explore Plans
+                <a href="{{ route('pages.platform') }}" class="hidden xl:inline-flex gsc-nav-cta" wire:navigate>
+                    Explore Platform
                 </a>
 
                 <livewire:components.cart />
