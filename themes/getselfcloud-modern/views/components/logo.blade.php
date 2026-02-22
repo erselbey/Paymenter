@@ -2,8 +2,8 @@
 $lightLogo = config('settings.logo');
 $darkLogo = config('settings.logo_dark');
 $appName = config('app.name', 'P');
-$bundledLogoPath = public_path('getselfcloud-modern/images/getselfcloud-com-V2.png');
-$bundledLogoUrl = file_exists($bundledLogoPath) ? asset('getselfcloud-modern/images/getselfcloud-com-V2.png') : null;
+$bundledLogoPath = public_path('assets/getselfcloud-modern/images/getselfcloud-com-V2.png');
+$bundledLogoUrl = file_exists($bundledLogoPath) ? asset('assets/getselfcloud-modern/images/getselfcloud-com-V2.png') : null;
 $initials = collect(explode(' ', $appName))
     ->filter()
     ->map(fn ($word) => strtoupper(substr($word, 0, 1)))
